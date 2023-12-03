@@ -8,12 +8,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
-
-	// "math"
 	"os"
 	"strings"
 
-	// 	"time"
+		"time"
 	"github.com/kljensen/snowball/english"
 )
 
@@ -31,9 +29,7 @@ type TermStats struct {
 var docs []Document
 
 type InvertedIndex map[string][]int
-
 type TFIDFIndex map[string]map[int]TermStats
-
 type IDF map[string][2]float64
 
 func loadJSON(filePath string) (Document, error) {
@@ -42,12 +38,10 @@ func loadJSON(filePath string) (Document, error) {
 	if err != nil {
 		return doc, err
 	}
-
 	err = json.Unmarshal(fileContent, &doc)
 	if err != nil {
 		return doc, err
 	}
-
 	return doc, nil
 }
 
@@ -76,7 +70,6 @@ func buildIDF(docs []Document, queryTokens []string) (IDF, InvertedIndex) {
 	for docID, doc := range docs {
 		tokens := tokenizeAndStem(doc.Title)
 		for _, token := range tokens {
-			fmt.Println(token)
 			val, exists := idf[token]
 			if !exists {
 				idf[token] = val
@@ -109,11 +102,12 @@ func buildIDF(docs []Document, queryTokens []string) (IDF, InvertedIndex) {
 }
 
 func main() {
+	startTime := time.Now()
 	userQuery := "pass-by-reference or pass-by-value java How do I avoid checking for nulls in Java?"
 	queryTokens := processQuery(userQuery)
 	_ = queryTokens
 
-	dir := "../test_snippets"
+	dir := "../code_snippets"
 
 	fileList, err := os.ReadDir(dir)
 	if err != nil {
@@ -122,7 +116,7 @@ func main() {
 	}
 
 	for _, file := range fileList {
-		filePath := fmt.Sprintf("../test_snippets/%s", file.Name())
+		filePath := fmt.Sprintf("../code_snippets/%s", file.Name())
 		doc, err := loadJSON(filePath)
 		if err != nil {
 			fmt.Println("Error loading JSON:", err)
@@ -143,5 +137,9 @@ func main() {
 	// for key, value := range idf {
 	// 	fmt.Println(key, value)
 	// }
+	endTime := time.Now()
+	elapsedTime := endTime.Sub(startTime)
+	fmt.Printf("Elapsed time: %v\n", elapsedTime)
+
 
 }
