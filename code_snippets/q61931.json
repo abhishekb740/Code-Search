@@ -1,0 +1,28 @@
+{
+    "title": "\"implements Runnable\" vs \"extends Thread\" in Java",
+    "description": [
+        "From what time I've spent with threads in Java, I've found these two ways to write threads:",
+        "With implements Runnable:",
+        "public class MyRunnable implements Runnable {",
+        "    public void run() {",
+        "        //Code",
+        "    }",
+        "}",
+        "//Started with a \"new Thread(new MyRunnable()).start()\" call",
+        "Or, with extends Thread:",
+        "public class MyThread extends Thread {",
+        "    public MyThread() {",
+        "        super(\"MyThread\");",
+        "    }",
+        "    public void run() {",
+        "        //Code",
+        "    }",
+        "}",
+        "//Started with a \"new MyThread().start()\" call",
+        "Is there any significant difference in these two blocks of code?"
+    ],
+    "answer": [
+        "Yes: implements Runnable is the preferred way to do it, IMO. You're not really specialising the thread's behaviour.  You're just giving it something to run. That means composition is the philosophically \"purer\" way to go.",
+        "In practical terms, it means you can implement Runnable and extend from another class as well... and you can also implement Runnable via a lambda expression as of Java 8."
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "title": "How do you assert that a certain exception is thrown in JUnit tests?",
+    "description": [
+        "How can I use JUnit idiomatically to test that some code throws an exception?",
+        "While I can certainly do something like this:",
+        "@Test",
+        "public void testFooThrowsIndexOutOfBoundsException() {",
+        "    boolean thrown = false;",
+        "    try {",
+        "        foo.doStuff();",
+        "    } catch (IndexOutOfBoundsException e) {",
+        "        thrown = true;",
+        "    }",
+        "    assertTrue(thrown);",
+        "}",
+        "I recall that there is an annotation or an Assert.xyz or something that is far less kludgy and far more in-the-spirit of JUnit for these sorts of situations."
+    ],
+    "answer": [
+        "It depends on the JUnit version and what assert libraries you use.",
+        "For JUnit5 and 4.13 see answer",
+        "If you use AssertJ or google-truth, see answer",
+        "The original answer for JUnit <= 4.12 was:",
+        "    @Test(expected = IndexOutOfBoundsException.class)",
+        "    public void testIndexOutOfBoundsException() {",
+        "        ArrayList emptyList = new ArrayList();",
+        "        Object o = emptyList.get(0);",
+        "    }",
+        "Though answer has more options for JUnit <= 4.12.",
+        "Reference:",
+        "JUnit Test-FAQ"
+    ]
+}

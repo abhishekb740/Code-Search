@@ -1,0 +1,23 @@
+{
+    "title": "Does Java support default parameter values?",
+    "description": [
+        "I came across some Java code that had the following structure:",
+        "public MyParameterizedFunction(String param1, int param2)",
+        "{",
+        "    this(param1, param2, false);",
+        "}",
+        "public MyParameterizedFunction(String param1, int param2, boolean param3)",
+        "{",
+        "    //use all three parameters here",
+        "}",
+        "I know that in C++ I can assign a parameter a default value.  For example:",
+        "void MyParameterizedFunction(String param1, int param2, bool param3=false);",
+        "Does Java support this kind of syntax?  Are there any reasons why this two step syntax is preferable?"
+    ],
+    "answer": [
+        "No, the structure you found is how Java handles it, (that is, with overloading instead of default parameters).",
+        "For constructors, See Effective Java: Programming Language Guide's Item 1 tip (Consider static factory methods instead of constructors)",
+        "If the overloading is getting complicated. For other methods, renaming some cases or using a parameter object can help.",
+        "This is when you have enough complexity that differentiating is difficult. A definite case is where you have to differentiate using the order of parameters, not just number and type."
+    ]
+}

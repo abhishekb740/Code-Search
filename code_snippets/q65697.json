@@ -1,0 +1,10 @@
+{
+    "title": "Difference between StringBuilder and StringBuffer",
+    "description": [
+        "What is the main difference between StringBuffer and StringBuilder?",
+        "Is there any performance issues when deciding on any one of these?"
+    ],
+    "answer": [
+        "StringBuffer is synchronized, StringBuilder is not."
+    ]
+}

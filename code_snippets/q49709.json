@@ -1,0 +1,17 @@
+{
+    "title": "How do I efficiently iterate over each entry in a Java Map?",
+    "description": [
+        "If I have an object implementing the Map interface in Java and I wish to iterate over every pair contained within it,  what is the most efficient way of going through the map?",
+        "Will the ordering of elements depend on the specific map implementation that I have for the interface?"
+    ],
+    "answer": [
+        "Map<String, String> map = ...",
+        "for (Map.Entry<String, String> entry : map.entrySet()) {",
+        "    System.out.println(entry.getKey() + \"/\" + entry.getValue());",
+        "}",
+        "On Java 10+:",
+        "for (var entry : map.entrySet()) {",
+        "    System.out.println(entry.getKey() + \"/\" + entry.getValue());",
+        "}"
+    ]
+}

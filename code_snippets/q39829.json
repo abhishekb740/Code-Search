@@ -1,0 +1,43 @@
+{
+    "title": "What's the simplest way to print a Java array?",
+    "description": [
+        "In Java, arrays don't override toString(), so if you try to print one directly, you get the className + '@' + the hex of the hashCode of the array, as defined by Object.toString():",
+        "int[] intArray = new int[] {1, 2, 3, 4, 5};",
+        "System.out.println(intArray); // Prints something like '[I@3343c8b3'",
+        "But usually, we'd actually want something more like [1, 2, 3, 4, 5]. What's the simplest way of doing that? Here are some example inputs and outputs:",
+        "// Array of primitives:",
+        "int[] intArray = new int[] {1, 2, 3, 4, 5};",
+        "// Output: [1, 2, 3, 4, 5]",
+        "// Array of object references:",
+        "String[] strArray = new String[] {\"John\", \"Mary\", \"Bob\"};",
+        "// Output: [John, Mary, Bob]"
+    ],
+    "answer": [
+        "Since Java 5 you can use Arrays.toString(arr) or Arrays.deepToString(arr) for arrays within arrays. Note that the Object[] version calls .toString() on each object in the array. The output is even decorated in the exact way you're asking.",
+        "Examples:",
+        "Simple Array:",
+        "String[] array = new String[] {\"John\", \"Mary\", \"Bob\"};",
+        "System.out.println(Arrays.toString(array));",
+        "Output:",
+        "[John, Mary, Bob]",
+        "Nested Array:",
+        "String[][] deepArray = new String[][] {{\"John\", \"Mary\"}, {\"Alice\", \"Bob\"}};",
+        "// Gives undesired output:",
+        "System.out.println(Arrays.toString(deepArray));",
+        "// Gives the desired output:",
+        "System.out.println(Arrays.deepToString(deepArray));",
+        "Output:",
+        "[[Ljava.lang.String;@106d69c, [Ljava.lang.String;@52e922]",
+        "[[John, Mary], [Alice, Bob]]",
+        "double Array:",
+        "double[] doubleArray = { 7.0, 9.0, 5.0, 1.0, 3.0 };",
+        "System.out.println(Arrays.toString(doubleArray));",
+        "Output:",
+        "[7.0, 9.0, 5.0, 1.0, 3.0 ]",
+        "int Array:",
+        "int[] intArray = { 7, 9, 5, 1, 3 };",
+        "System.out.println(Arrays.toString(intArray));",
+        "Output:",
+        "[7, 9, 5, 1, 3 ]"
+    ]
+}

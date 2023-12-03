@@ -1,0 +1,31 @@
+{
+    "title": "Iterate through a HashMap [duplicate]",
+    "description": [
+        "This question already has answers here:",
+        "                                ",
+        "                            ",
+        "How do I efficiently iterate over each entry in a Java Map?",
+        "                                (45 answers)",
+        "                            ",
+        "Closed 4 years ago.",
+        "What's the best way to iterate over the items in a HashMap?"
+    ],
+    "answer": [
+        "If you're only interested in the keys, you can iterate through the keySet() of the map:",
+        "Map<String, Object> map = ...;",
+        "for (String key : map.keySet()) {",
+        "    // ...",
+        "}",
+        "If you only need the values, use values():",
+        "for (Object value : map.values()) {",
+        "    // ...",
+        "}",
+        "Finally, if you want both the key and value, use entrySet():",
+        "for (Map.Entry<String, Object> entry : map.entrySet()) {",
+        "    String key = entry.getKey();",
+        "    Object value = entry.getValue();",
+        "    // ...",
+        "}",
+        "One caveat: if you want to remove items mid-iteration, you'll need to do so via an Iterator (see karim79's answer). However, changing item values is OK (see Map.Entry)."
+    ]
+}

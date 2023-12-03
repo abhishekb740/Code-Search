@@ -1,0 +1,28 @@
+{
+    "title": "Comparing Java enum members: == or equals()?",
+    "description": [
+        "I know that Java enums are compiled to classes with private constructors and a bunch of public static members. When comparing two members of a given enum, I've always used .equals(), e.g.",
+        "public useEnums(SomeEnum a)",
+        "{",
+        "    if(a.equals(SomeEnum.SOME_ENUM_VALUE))",
+        "    {",
+        "        ...",
+        "    }",
+        "    ...",
+        "}",
+        "However, I just came across some code that uses the equals operator == instead of .equals():",
+        "public useEnums2(SomeEnum a)",
+        "{",
+        "    if(a == SomeEnum.SOME_ENUM_VALUE)",
+        "    {",
+        "        ...",
+        "    }",
+        "    ...",
+        "}",
+        "Which operator is the one I should be using?"
+    ],
+    "answer": [
+        "Both are technically correct. If you look at the source code for .equals(), it simply defers to ==.",
+        "I use ==, however, as that will be null safe."
+    ]
+}

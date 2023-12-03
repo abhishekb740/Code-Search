@@ -1,0 +1,32 @@
+{
+    "title": "Java inner class and static nested class",
+    "description": [
+        "What is the main difference between an inner class and a static nested class in Java? Does design / implementation play a role in choosing one of these?"
+    ],
+    "answer": [
+        "From the Java Tutorial:",
+        "Nested classes are divided into two categories: static and non-static. Nested classes that are declared static are simply called static nested classes. Non-static nested classes are called inner classes. ",
+        "Static nested classes are accessed using the enclosing class name:",
+        "OuterClass.StaticNestedClass",
+        "For example, to create an object for the static nested class, use this syntax:",
+        "OuterClass.StaticNestedClass nestedObject = new OuterClass.StaticNestedClass();",
+        "Objects that are instances of an inner class exist within an instance of the outer class. Consider the following classes:",
+        "class OuterClass {",
+        "    ...",
+        "    class InnerClass {",
+        "        ...",
+        "    }",
+        "}",
+        "An instance of InnerClass can exist only within an instance of OuterClass and has direct access to the methods and fields of its enclosing instance.",
+        "To instantiate an inner class, you must first instantiate the outer class. Then, create the inner object within the outer object with this syntax:",
+        "OuterClass outerObject = new OuterClass()",
+        "OuterClass.InnerClass innerObject = outerObject.new InnerClass();",
+        "see: Java Tutorial - Nested Classes",
+        "For completeness note that there is also such a thing as an inner class without an enclosing instance:",
+        "class A {",
+        "  int t() { return 1; }",
+        "  static A a =  new A() { int t() { return 2; } };",
+        "}",
+        "Here, new A() { ... } is an inner class defined in a static context and does not have an enclosing instance."
+    ]
+}

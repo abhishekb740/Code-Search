@@ -1,0 +1,22 @@
+{
+    "title": "How do I test a class that has private methods, fields or inner classes?",
+    "description": [
+        "How do I use JUnit to test a class that has internal private methods, fields or nested classes?",
+        "It seems bad to change the access modifier for a method just to be able to run a test."
+    ],
+    "answer": [
+        "If you have somewhat of a legacy Java application, and you're not allowed to change the visibility of your methods, the best way to test private methods is to use reflection.",
+        "Internally we're using helpers to get/set private and private static variables as well as invoke private and private static methods. The following patterns will let you do pretty much anything related to the private methods and fields. Of course, you can't change private static final variables through reflection.",
+        "Method method = TargetClass.getDeclaredMethod(methodName, argClasses);",
+        "method.setAccessible(true);",
+        "return method.invoke(targetObject, argObjects);",
+        "And for fields:",
+        "Field field = TargetClass.getDeclaredField(fieldName);",
+        "field.setAccessible(true);",
+        "field.set(object, value);",
+        "Notes:",
+        "TargetClass.getDeclaredMethod(methodName, argClasses) lets you look into private methods. The same thing applies for",
+        "getDeclaredField.",
+        "The setAccessible(true) is required to play around with privates."
+    ]
+}

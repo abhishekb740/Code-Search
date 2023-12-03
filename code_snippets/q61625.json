@@ -1,0 +1,20 @@
+{
+    "title": "How do I call one constructor from another in Java?",
+    "description": [
+        "Is it possible to call a constructor from another (within the same class, not from a subclass)? If yes how? And what could be the best way to call another constructor (if there are several ways to do it)?"
+    ],
+    "answer": [
+        "Yes, it is possible:",
+        "public class Foo {",
+        "    private int x;",
+        "    public Foo() {",
+        "        this(1);",
+        "    }",
+        "    public Foo(int x) {",
+        "        this.x = x;",
+        "    }",
+        "}",
+        "To chain to a particular superclass constructor instead of one in the same class, use super instead of this. Note that you can only chain to one constructor, and it has to be the first statement in your constructor body.",
+        "See also this related question, which is about C# but where the same principles apply."
+    ]
+}
