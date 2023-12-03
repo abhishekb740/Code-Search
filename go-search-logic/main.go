@@ -238,13 +238,13 @@ func main() {
 	userQuery := "java"
 	queryTokens := processQuery(userQuery)
 
-	// 	dir := "../code_snippets"
+	dir := "../code_snippets"
 
-	// 	fileList, err := os.ReadDir(dir)
-	// 	if err != nil {
-	// 		fmt.Println("Error reading directory: ", err)
-	// 		return
-	// 	}
+	fileList, err := os.ReadDir(dir)
+	if err != nil {
+		fmt.Println("Error reading directory: ", err)
+		return
+	}
 
 	var wg sync.WaitGroup
 	var mu sync.Mutex
@@ -270,15 +270,15 @@ func main() {
 		docs = append(docs, batch...)
 	}
 
-	// 	invertedIndex := buildInvertedIndex(docs)
+	invertedIndex := buildInvertedIndex(docs)
 
-	// 	tfidfIndex := calculateTFIDF(docs, invertedIndex)
+	tfidfIndex := calculateTFIDF(docs, invertedIndex)
 
-	// 	rankedDocs := rankDocuments(queryTokens, tfidfIndex)
+	rankedDocs := rankDocuments(queryTokens, tfidfIndex)
 
-	// 	endTime := time.Now()
+	endTime := time.Now()
 
-	// 	elapsedTime := endTime.Sub(startTime)
+	elapsedTime := endTime.Sub(startTime)
 
 	fmt.Println(rankedDocs)
 	for i := 0; i < 100; i++ {
