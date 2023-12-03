@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/kljensen/snowball/english"
 )
@@ -164,8 +165,53 @@ func rankDocuments(queryTokens []string, tfidfIndex TFIDFIndex) []int {
 	return rankedDocs
 }
 
+// func rankDocuments(queryTokens []string, tfidfIndex TFIDFIndex) []int {
+// 	queryVector := make(map[string]float64)
+// 	for _, token := range queryTokens {
+// 		queryVector[token]++
+// 	}
+
+// 	similarityScores := make(map[int]float64)
+// 	var wg sync.WaitGroup
+// 	var mu sync.Mutex
+
+// 	for term, queryTFIDF := range queryVector {
+// 		wg.Add(1)
+// 		go func(term string, queryTFIDF float64) {
+// 			defer wg.Done()
+
+// 			if docScores, exists := tfidfIndex[term]; exists {
+// 				localScores := make(map[int]float64)
+// 				for docID, docTFIDF := range docScores {
+// 					localScores[docID] += queryTFIDF * docTFIDF.TF * docTFIDF.IDF
+// 				}
+
+// 				mu.Lock()
+// 				for docID, score := range localScores {
+// 					similarityScores[docID] += score
+// 				}
+// 				mu.Unlock()
+// 			}
+// 		}(term, queryTFIDF)
+// 	}
+
+// 	wg.Wait()
+
+// 	var rankedDocs []int
+// 	for docID := range similarityScores {
+// 		rankedDocs = append(rankedDocs, docID)
+// 	}
+
+// 	sort.Slice(rankedDocs, func(i, j int) bool {
+// 		return similarityScores[rankedDocs[i]] > similarityScores[rankedDocs[j]]
+// 	})
+
+// 	return rankedDocs
+// }
+
 func main() {
-	userQuery := "array"
+	startTime := time.Now()
+	userQuery := "java"
 	queryTokens := processQuery(userQuery)
 	_ = queryTokens
 
@@ -194,7 +240,12 @@ func main() {
 
 	rankedDocs := rankDocuments(queryTokens, tfidfIndex)
 
+	endTime := time.Now()
+
+	elapsedTime := endTime.Sub(startTime)
+
 	fmt.Println("Ranked Document IDs:", rankedDocs)
 
 	fmt.Println(docs[rankedDocs[0]].Title)
+	fmt.Printf("Elapsed time: %v\n", elapsedTime)
 }
