@@ -211,7 +211,7 @@ func rankDocuments(queryTokens []string, tfidfIndex TFIDFIndex) []int {
 
 func main() {
 	startTime := time.Now()
-	userQuery := "java"
+	userQuery := "Java inner class and static nested class"
 	queryTokens := processQuery(userQuery)
 	_ = queryTokens
 
