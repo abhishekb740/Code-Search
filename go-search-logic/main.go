@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/kljensen/snowball/english"
@@ -28,6 +30,8 @@ type TFIDFIndex map[string]map[int]TermStats
 
 type InvertedIndex map[string][]int
 
+const batchSize = 11250
+
 func loadJSON(filePath string) (Document, error) {
 	var doc Document
 	fileContent, err := os.ReadFile(filePath)
@@ -41,6 +45,26 @@ func loadJSON(filePath string) (Document, error) {
 	}
 
 	return doc, nil
+}
+
+func loadBatchJSON(fileList []os.DirEntry, startIndex int, endIndex int, ch chan []Document, wg *sync.WaitGroup, mu *sync.Mutex) {
+	defer wg.Done()
+
+	var batch []Document
+	for i := startIndex; i < endIndex; i++ {
+		filePath := fmt.Sprintf("../code_snippets/%s", fileList[i].Name())
+		doc, err := loadJSON(filePath)
+		if err != nil {
+			fmt.Printf("Error loading JSON from file %s: %s\n", filePath, err)
+			continue
+		}
+		batch = append(batch, doc)
+	}
+
+	// Send the batch of loaded documents through the channel
+	mu.Lock()
+	ch <- batch
+	mu.Unlock()
 }
 
 func tokenizeAndStem(text string) []string {
@@ -139,81 +163,80 @@ func processQuery(query string) []string {
 //     return dotProduct / (math.Sqrt(queryMagnitude) * math.Sqrt(docMagnitude))
 // }
 
-func rankDocuments(queryTokens []string, tfidfIndex TFIDFIndex) []int {
-	// Calculate the query vector
-	queryVector := make(map[string]float64)
-	for _, token := range queryTokens {
-		queryVector[token]++
-	}
-
-	// Calculate cosine similarity for each document
-	similarityScores := make(map[int]float64)
-	for term, queryTFIDF := range queryVector {
-		if docScores, exists := tfidfIndex[term]; exists {
-			for docID, docTFIDF := range docScores {
-				similarityScores[docID] += queryTFIDF * docTFIDF.TF * docTFIDF.IDF
-			}
-		}
-	}
-
-	// Rank documents based on similarity scores
-	var rankedDocs []int
-	for docID := range similarityScores {
-		rankedDocs = append(rankedDocs, docID)
-	}
-
-	return rankedDocs
-}
-
 // func rankDocuments(queryTokens []string, tfidfIndex TFIDFIndex) []int {
+// 	// Calculate the query vector
 // 	queryVector := make(map[string]float64)
 // 	for _, token := range queryTokens {
 // 		queryVector[token]++
 // 	}
 
+// 	// Calculate cosine similarity for each document
 // 	similarityScores := make(map[int]float64)
-// 	var wg sync.WaitGroup
-// 	var mu sync.Mutex
-
 // 	for term, queryTFIDF := range queryVector {
-// 		wg.Add(1)
-// 		go func(term string, queryTFIDF float64) {
-// 			defer wg.Done()
-
-// 			if docScores, exists := tfidfIndex[term]; exists {
-// 				localScores := make(map[int]float64)
-// 				for docID, docTFIDF := range docScores {
-// 					localScores[docID] += queryTFIDF * docTFIDF.TF * docTFIDF.IDF
-// 				}
-
-// 				mu.Lock()
-// 				for docID, score := range localScores {
-// 					similarityScores[docID] += score
-// 				}
-// 				mu.Unlock()
+// 		if docScores, exists := tfidfIndex[term]; exists {
+// 			for docID, docTFIDF := range docScores {
+// 				similarityScores[docID] += queryTFIDF * docTFIDF.TF * docTFIDF.IDF
 // 			}
-// 		}(term, queryTFIDF)
+// 		}
 // 	}
 
-// 	wg.Wait()
-
+// 	// Rank documents based on similarity scores
 // 	var rankedDocs []int
 // 	for docID := range similarityScores {
 // 		rankedDocs = append(rankedDocs, docID)
 // 	}
 
-// 	sort.Slice(rankedDocs, func(i, j int) bool {
-// 		return similarityScores[rankedDocs[i]] > similarityScores[rankedDocs[j]]
-// 	})
-
 // 	return rankedDocs
 // }
 
+func rankDocuments(queryTokens []string, tfidfIndex TFIDFIndex) []int {
+	queryVector := make(map[string]float64)
+	for _, token := range queryTokens {
+		queryVector[token]++
+	}
+
+	similarityScores := make(map[int]float64)
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+
+	for term, queryTFIDF := range queryVector {
+		wg.Add(1)
+		go func(term string, queryTFIDF float64) {
+			defer wg.Done()
+
+			if docScores, exists := tfidfIndex[term]; exists {
+				localScores := make(map[int]float64)
+				for docID, docTFIDF := range docScores {
+					localScores[docID] += queryTFIDF * docTFIDF.TF * docTFIDF.IDF
+				}
+
+				mu.Lock()
+				for docID, score := range localScores {
+					similarityScores[docID] += score
+				}
+				mu.Unlock()
+			}
+		}(term, queryTFIDF)
+	}
+
+	wg.Wait()
+
+	var rankedDocs []int
+	for docID := range similarityScores {
+		rankedDocs = append(rankedDocs, docID)
+	}
+
+	sort.Slice(rankedDocs, func(i, j int) bool {
+		return similarityScores[rankedDocs[i]] > similarityScores[rankedDocs[j]]
+	})
+
+	return rankedDocs
+}
+
 func main() {
 	startTime := time.Now()
-	userQuery := "Java inner class and static nested class"
+	userQuery := "java"
 	queryTokens := processQuery(userQuery)
-	_ = queryTokens
 
 	dir := "../code_snippets"
 
@@ -223,15 +246,28 @@ func main() {
 		return
 	}
 
-	for _, file := range fileList {
-		filePath := fmt.Sprintf("../code_snippets/%s", file.Name())
-		doc, err := loadJSON(filePath)
-		if err != nil {
-			fmt.Println("Error loading JSON:", err)
-			return
-		}
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	ch := make(chan []Document, len(fileList)/batchSize) // Buffered channel to avoid blocking
 
-		docs = append(docs, doc)
+	for i := 0; i < len(fileList); i += batchSize {
+		// Increment the WaitGroup counter for each goroutine
+		wg.Add(1)
+
+		// Launch a goroutine to load JSON files in batches
+		go loadBatchJSON(fileList, i, i+batchSize, ch, &wg, &mu)
+	}
+
+	// Close the channel once all goroutines are done
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	// Collect batches of documents from the channel
+	var docs []Document
+	for batch := range ch {
+		docs = append(docs, batch...)
 	}
 
 	invertedIndex := buildInvertedIndex(docs)
@@ -244,8 +280,9 @@ func main() {
 
 	elapsedTime := endTime.Sub(startTime)
 
-	fmt.Println("Ranked Document IDs:", rankedDocs)
-
-	fmt.Println(docs[rankedDocs[0]].Title)
+	fmt.Println(rankedDocs)
+	for i := 0; i < 100; i++ {
+		fmt.Println(docs[rankedDocs[i]].Title)
+	}
 	fmt.Printf("Elapsed time: %v\n", elapsedTime)
 }
