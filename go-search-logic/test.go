@@ -11,7 +11,8 @@ import (
 	"os"
 	"strings"
 
-		"time"
+	"time"
+
 	"github.com/kljensen/snowball/english"
 )
 
@@ -31,6 +32,7 @@ var docs []Document
 type InvertedIndex map[string][]int
 type TFIDFIndex map[string]map[int]TermStats
 type IDF map[string][2]float64
+type TermFrequency map[int]map[string]int
 
 func loadJSON(filePath string) (Document, error) {
 	var doc Document
@@ -64,12 +66,19 @@ func processQuery(query string) []string {
 	return tokens
 }
 
-func buildIDF(docs []Document, queryTokens []string) (IDF, InvertedIndex) {
+func buildIDF(docs []Document, queryTokens []string) (IDF, InvertedIndex, TermFrequency) {
 	idf := make(IDF)
 	index := make(InvertedIndex)
+	termFrequency := make(TermFrequency)
 	for docID, doc := range docs {
 		tokens := tokenizeAndStem(doc.Title)
 		for _, token := range tokens {
+			termFreq, exists := termFrequency[docID]
+			if !exists {
+				termFrequency[docID] = termFreq
+				termFrequency[docID] = make(map[string]int)
+			}
+			termFrequency[docID][token]++
 			val, exists := idf[token]
 			if !exists {
 				idf[token] = val
@@ -98,7 +107,17 @@ func buildIDF(docs []Document, queryTokens []string) (IDF, InvertedIndex) {
 		idfValue := math.Log2(float64(len(docs)) / df)
 		idf[key] = [2]float64{df, idfValue}
 	}
-	return idf, index
+	return idf, index, termFrequency
+}
+
+func getDocIdsForQueryTokens(queryTokens []string, invertedIndex InvertedIndex) InvertedIndex {
+	queryDocsIndex := make(InvertedIndex)
+	for _, token := range queryTokens {
+		if _, exists := invertedIndex[token]; exists {
+			queryDocsIndex[token] = invertedIndex[token]
+		}
+	}
+	return queryDocsIndex
 }
 
 func main() {
@@ -107,7 +126,7 @@ func main() {
 	queryTokens := processQuery(userQuery)
 	_ = queryTokens
 
-	dir := "../code_snippets"
+	dir := "../test_snippets"
 
 	fileList, err := os.ReadDir(dir)
 	if err != nil {
@@ -116,7 +135,7 @@ func main() {
 	}
 
 	for _, file := range fileList {
-		filePath := fmt.Sprintf("../code_snippets/%s", file.Name())
+		filePath := fmt.Sprintf("../test_snippets/%s", file.Name())
 		doc, err := loadJSON(filePath)
 		if err != nil {
 			fmt.Println("Error loading JSON:", err)
@@ -125,7 +144,7 @@ func main() {
 		docs = append(docs, doc)
 	}
 
-	idf, invertedIndex := buildIDF(docs, queryTokens)
+	idf, invertedIndex, termFrequency := buildIDF(docs, queryTokens)
 	fmt.Println(len(idf))
 	fmt.Println(len(invertedIndex))
 
@@ -137,9 +156,14 @@ func main() {
 	// for key, value := range idf {
 	// 	fmt.Println(key, value)
 	// }
+	// for key, value := range termFrequency {
+	// 	fmt.Println(key, value)
+	// }
+	_ = termFrequency
+
+	docIds := getDocIdsForQueryTokens(queryTokens, invertedIndex)
+	fmt.Println(docIds)
 	endTime := time.Now()
 	elapsedTime := endTime.Sub(startTime)
 	fmt.Printf("Elapsed time: %v\n", elapsedTime)
-
-
 }
