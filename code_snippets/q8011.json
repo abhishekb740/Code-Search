@@ -1,0 +1,14 @@
+{
+    "title": "Why is char[] preferred over String for passwords?",
+    "description": [
+        "In Swing, the password field has a getPassword() (returns char[]) method instead of the usual getText() (returns String) method. Similarly, I have come across a suggestion not to use String to handle passwords.",
+        "Why does String pose a threat to security when it comes to passwords?",
+        "It feels inconvenient to use char[]."
+    ],
+    "answer": [
+        "Strings are immutable. That means once you've created the String, if another process can dump memory, there's no way (aside from reflection) you can get rid of the data before garbage collection kicks in.",
+        "With an array, you can explicitly wipe the data after you're done with it. You can overwrite the array with anything you like, and the password won't be present anywhere in the system, even before garbage collection.",
+        "So yes, this is a security concern - but even using char[] only reduces the window of opportunity for an attacker, and it's only for this specific type of attack.",
+        "As noted in the comments, it's possible that arrays being moved by the garbage collector will leave stray copies of the data in memory. I believe this is implementation-specific - the garbage collector may clear all memory as it goes, to avoid this sort of thing. Even if it does, there's still the time during which the char[] contains the actual characters as an attack window."
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "title": "What is a JavaBean exactly?",
+    "description": [
+        "I understood, I think, that a \"Bean\" is a Java-class with properties and getters/setters. ",
+        "As much as I understand, it is the equivalent of a C struct. Is that true?",
+        "Also, is there a real syntactic difference between a JavaBean and a regular class? ",
+        "Is there any special definition or an Interface?",
+        "Basically, why is there a term for this?",
+        "Also what does the Serializable interface mean?"
+    ],
+    "answer": [
+        "A JavaBean is just a standard. It is a regular Java class, except it follows certain conventions:",
+        "All properties are private (use getters/setters)",
+        "A public no-argument constructor",
+        "Implements Serializable.",
+        "That's it. It's just a convention.  Lots of libraries depend on it though.",
+        "With respect to Serializable, from the API documentation:",
+        "Serializability of a class is enabled by the class implementing the",
+        "java.io.Serializable interface. Classes that do not implement this",
+        "interface will not have any of their state serialized or deserialized.",
+        "All subtypes of a serializable class are themselves serializable. The",
+        "serialization interface has no methods or fields and serves only to",
+        "identify the semantics of being serializable.",
+        "In other words, serializable objects can be written to streams, and hence files, object databases, anything really.",
+        "Also, there is no syntactic difference between a JavaBean and another class -- a class is a JavaBean if it follows the standards.",
+        "There is a term for it, because the standard allows libraries to programmatically do things with class instances you define in a predefined way. For example, if a library wants to stream any object you pass into it, it knows it can because your object is serializable (assuming the library requires your objects be proper JavaBeans)."
+    ]
+}

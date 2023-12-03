@@ -1,0 +1,25 @@
+{
+    "title": "Initialization of an ArrayList in one line",
+    "description": [
+        "I wanted to create a list of options for testing purposes. At first, I did this:",
+        "ArrayList<String> places = new ArrayList<String>();",
+        "places.add(\"Buenos Aires\");",
+        "places.add(\"C\u00f3rdoba\");",
+        "places.add(\"La Plata\");",
+        "Then, I refactored the code as follows:",
+        "ArrayList<String> places = new ArrayList<String>(",
+        "    Arrays.asList(\"Buenos Aires\", \"C\u00f3rdoba\", \"La Plata\"));",
+        "Is there a better way to do this?"
+    ],
+    "answer": [
+        "It would be simpler if you were to just declare it as a List - does it have to be an ArrayList?",
+        "List<String> places = Arrays.asList(\"Buenos Aires\", \"C\u00f3rdoba\", \"La Plata\");",
+        "Or if you have only one element:",
+        "List<String> places = Collections.singletonList(\"Buenos Aires\");",
+        "This would mean that places is immutable (trying to change it will cause an UnsupportedOperationException exception to be thrown).",
+        "To make a mutable list that is a concrete ArrayList you can create an ArrayList from the immutable list:",
+        "ArrayList<String> places = new ArrayList<>(Arrays.asList(\"Buenos Aires\", \"C\u00f3rdoba\", \"La Plata\"));",
+        "And import the correct package:",
+        "import java.util.Arrays;"
+    ]
+}

@@ -1,0 +1,24 @@
+{
+    "title": "What is reflection and why is it useful?",
+    "description": [
+        "What is reflection, and why is it useful?",
+        "I'm particularly interested in Java, but I assume the principles are the same in any language."
+    ],
+    "answer": [
+        "The name reflection is used to describe code which is able to inspect other code in the same system (or itself).",
+        "For example, say you have an object of an unknown type in Java, and you would like to call a 'doSomething' method on it if one exists. Java's static typing system isn't really designed to support this unless the object conforms to a known interface, but using reflection, your code can look at the object and find out if it has a method called 'doSomething' and then call it if you want to.",
+        "So, to give you a code example of this in Java (imagine the object in question is foo) :",
+        "Method method = foo.getClass().getMethod(\"doSomething\", null);",
+        "method.invoke(foo, null);",
+        "One very common use case in Java is the usage with annotations. JUnit 4, for example, will use reflection to look through your classes for methods tagged with the @Test annotation, and will then call them when running the unit test.",
+        "There are some good reflection examples to get you started at http://docs.oracle.com/javase/tutorial/reflect/index.html",
+        "And finally, yes, the concepts are pretty much similar in other statically typed languages which support reflection (like C#). In dynamically typed languages, the use case described above is less necessary (since the compiler will allow any method to be called on any object, failing at runtime if it does not exist), but the second case of looking for methods which are marked or work in a certain way is still common.",
+        "Update from a comment:",
+        "The ability to inspect the code in the system and see object types is",
+        "  not reflection, but rather Type Introspection. Reflection is then the",
+        "  ability to make modifications at runtime by making use of",
+        "  introspection. The distinction is necessary here as some languages",
+        "  support introspection, but do not support reflection. One such example",
+        "  is C++"
+    ]
+}

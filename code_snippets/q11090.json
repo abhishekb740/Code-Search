@@ -1,0 +1,43 @@
+{
+    "title": "How do I split a string in Java?",
+    "description": [
+        "I want to split a string using a delimiter, for example split \"004-034556\" into two separate strings by the delimiter \"-\":",
+        "part1 = \"004\";",
+        "part2 = \"034556\";",
+        "That means the first string will contain the characters before '-', and the second string will contain the characters after '-'.",
+        "I also want to check if the string has the delimiter ('-') in it."
+    ],
+    "answer": [
+        "Use the appropriately named method String#split().",
+        "String string = \"004-034556\";",
+        "String[] parts = string.split(\"-\");",
+        "String part1 = parts[0]; // 004",
+        "String part2 = parts[1]; // 034556",
+        "Note that split's argument is assumed to be a regular expression, so remember to escape special characters if necessary.",
+        "there are 12 characters with special meanings: the backslash \\, the caret ^, the dollar sign $, the period or dot ., the vertical bar or pipe symbol |, the question mark ?, the asterisk or star *, the plus sign +, the opening parenthesis (, the closing parenthesis ), and the opening square bracket [, the opening curly brace {, These special characters are often called \"metacharacters\".",
+        "For instance, to split on a period/dot . (which means \"any character\" in regex), use either backslash \\ to escape the individual special character like so split(\"\\\\.\"), or use character class [] to represent literal character(s) like so split(\"[.]\"), or use Pattern#quote() to escape the entire string like so split(Pattern.quote(\".\")).",
+        "String[] parts = string.split(Pattern.quote(\".\")); // Split on the exact string.",
+        "To test beforehand if the string contains certain character(s), just use String#contains().",
+        "if (string.contains(\"-\")) {",
+        "    // Split it.",
+        "} else {",
+        "    throw new IllegalArgumentException(\"String \" + string + \" does not contain -\");",
+        "}",
+        "Note, this does not take a regular expression. For that, use String#matches() instead.",
+        "If you'd like to retain the split character in the resulting parts, then make use of positive lookaround. In case you want to have the split character to end up in left hand side, use positive lookbehind by prefixing ?<= group on the pattern.",
+        "String string = \"004-034556\";",
+        "String[] parts = string.split(\"(?<=-)\");",
+        "String part1 = parts[0]; // 004-",
+        "String part2 = parts[1]; // 034556",
+        "In case you want to have the split character to end up in right hand side, use positive lookahead by prefixing ?= group on the pattern.",
+        "String string = \"004-034556\";",
+        "String[] parts = string.split(\"(?=-)\");",
+        "String part1 = parts[0]; // 004",
+        "String part2 = parts[1]; // -034556",
+        "If you'd like to limit the number of resulting parts, then you can supply the desired number as 2nd argument of split() method.",
+        "String string = \"004-034556-42\";",
+        "String[] parts = string.split(\"-\", 2);",
+        "String part1 = parts[0]; // 004",
+        "String part2 = parts[1]; // 034556-42"
+    ]
+}

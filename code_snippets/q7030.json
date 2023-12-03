@@ -1,0 +1,16 @@
+{
+    "title": "How to get an enum value from a string value in Java",
+    "description": [
+        "Say I have an enum which is just",
+        "public enum Blah {",
+        "    A, B, C, D",
+        "}",
+        "and I would like to find the enum value of a string, for example \"A\" which would be Blah.A. How would it be possible to do this?",
+        "Is the Enum.valueOf() the method I need? If so, how would I use this?"
+    ],
+    "answer": [
+        "Yes, Blah.valueOf(\"A\") will give you Blah.A.",
+        "Note that the name must be an exact match, including case: Blah.valueOf(\"a\") and Blah.valueOf(\"A \") both throw an IllegalArgumentException.",
+        "The static methods valueOf() and values() are created at compile time and do not appear in source code. They do appear in Javadoc, though; for example, Dialog.ModalityType shows both methods."
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "title": "In detail, how does the 'for each' loop work in Java?",
+    "description": [
+        "Consider:",
+        "List<String> someList = new ArrayList<>();",
+        "// add \"monkey\", \"donkey\", \"skeleton key\" to someList",
+        "for (String item : someList) {",
+        "    System.out.println(item);",
+        "}",
+        "What would the equivalent for loop look like without using the for each syntax?",
+        "People new to Java commonly encounter issues when trying to modify the original data using the new style foreach loop. Use Why doesn't assigning to the iteration variable in a foreach loop change the underlying data? to close duplicates about that common problem. Note that other languages with analogous constructs generally have the same issue; for example, see Why doesn't modifying the iteration variable affect subsequent iterations? for the same issue in Python."
+    ],
+    "answer": [
+        "for (Iterator<String> i = someIterable.iterator(); i.hasNext();) {",
+        "    String item = i.next();",
+        "    System.out.println(item);",
+        "}",
+        "Note that if you need to use i.remove(); in your loop, or access the actual iterator in some way, you cannot use the for ( : ) idiom, since the actual iterator is merely inferred.",
+        "As was noted by Denis Bueno, this code works for any object that implements the Iterable interface.",
+        "Also, if the right-hand side of the for (:) idiom is an array rather than an Iterable object, the internal code uses an int index counter and checks against array.length instead. See the Java Language Specification."
+    ]
+}

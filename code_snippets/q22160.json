@@ -1,0 +1,27 @@
+{
+    "title": "Why don't Java's +=, -=, *=, /= compound assignment operators require casting long to int?",
+    "description": [
+        "Until today, I thought that for example:",
+        "i += j;",
+        "Was just a shortcut for:",
+        "i = i + j;",
+        "But if we try this:",
+        "int i = 5;",
+        "long j = 8;",
+        "Then i = i + j; will not compile but i += j; will compile fine.",
+        "Does it mean that in fact i += j; is a shortcut for something like this",
+        "i = (type of i) (i + j)?"
+    ],
+    "answer": [
+        "As always with these questions, the JLS holds the answer. In this case \u00a715.26.2 Compound Assignment Operators. An extract:",
+        "A compound assignment expression of the form E1\u00a0op=\u00a0E2 is equivalent to E1\u00a0=\u00a0(T)((E1)\u00a0op\u00a0(E2)), where T is the type of E1, except that E1 is evaluated only once.",
+        "An example cited from \u00a715.26.2",
+        "[...] the following code is correct:",
+        "short x = 3;",
+        "x += 4.6;",
+        "and results in x having the value 7 because it is equivalent to:",
+        "short x = 3;",
+        "x = (short)(x + 4.6);",
+        "In other words, your assumption is correct."
+    ]
+}

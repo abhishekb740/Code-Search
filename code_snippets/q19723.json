@@ -1,0 +1,19 @@
+{
+    "title": "How do I determine whether an array contains a particular value in Java?",
+    "description": [
+        "I have a String[] with values like so:",
+        "public static final String[] VALUES = new String[] {\"AB\",\"BC\",\"CD\",\"AE\"};",
+        "Given String s, is there a good way of testing whether VALUES contains s?"
+    ],
+    "answer": [
+        "Arrays.asList(yourArray).contains(yourValue)",
+        "Warning: this doesn't work for arrays of primitives (see the comments).",
+        "Since java-8 you can now use Streams.",
+        "String[] values = {\"AB\",\"BC\",\"CD\",\"AE\"};",
+        "boolean contains = Arrays.stream(values).anyMatch(\"s\"::equals);",
+        "To check whether an array of int, double or long contains a value use IntStream, DoubleStream or LongStream respectively.",
+        "Example",
+        "int[] a = {1,2,3,4};",
+        "boolean contains = IntStream.of(a).anyMatch(x -> x == 4);"
+    ]
+}

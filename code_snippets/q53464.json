@@ -1,0 +1,33 @@
+{
+    "title": "What is the difference between public, protected, package-private and private in Java?",
+    "description": [
+        "In Java, are there clear rules on when to use each of access modifiers, namely the default (package private), public, protected and private, while making class and interface and dealing with inheritance?"
+    ],
+    "answer": [
+        "The official tutorial may be of some use to you.",
+        "Class",
+        "Package",
+        "Subclass(same pkg)",
+        "Subclass(diff pkg)",
+        "World",
+        "public",
+        "+",
+        "+",
+        "+",
+        "+",
+        "+",
+        "protected",
+        "+",
+        "+",
+        "+",
+        "+",
+        "no modifier",
+        "+",
+        "+",
+        "+",
+        "private",
+        "+",
+        "+ : accessible",
+        "blank : not accessible"
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "title": "Create ArrayList from array",
+    "description": [
+        "Element[] array = {new Element(1), new Element(2), new Element(3)};",
+        "How do I convert the above variable of type Element[] into a variable of type ArrayList<Element>?",
+        "ArrayList<Element> arrayList = ...;"
+    ],
+    "answer": [
+        "You can use the following instruction:",
+        "new ArrayList<>(Arrays.asList(array));"
+    ]
+}

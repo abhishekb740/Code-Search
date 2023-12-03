@@ -1,0 +1,25 @@
+{
+    "title": "How do I convert a String to an int in Java?",
+    "description": [
+        "How can I convert a String value to an int type?",
+        "\"1234\"  \u2192  1234"
+    ],
+    "answer": [
+        "String myString = \"1234\";",
+        "int foo = Integer.parseInt(myString);",
+        "If you look at the Java documentation you'll notice the \"catch\" is that this function can throw a NumberFormatException, which you can handle:",
+        "int foo;",
+        "try {",
+        "   foo = Integer.parseInt(myString);",
+        "}",
+        "catch (NumberFormatException e) {",
+        "   foo = 0;",
+        "}",
+        "(This treatment defaults a malformed number to 0, but you can do something else if you like.)",
+        "Alternatively, you can use an Ints method from the Guava library, which in combination with Java 8's Optional, makes for a powerful and concise way to convert a string into an int:",
+        "import com.google.common.primitives.Ints;",
+        "int foo = Optional.ofNullable(myString)",
+        " .map(Ints::tryParse)",
+        " .orElse(0)"
+    ]
+}
